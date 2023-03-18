@@ -1,0 +1,42 @@
+version: "3.3"
+
+services:
+  service-1:
+    build:
+      context: ./service-1
+      dockerfile: Dockerfile
+    working_dir: /app
+    volumes:
+      - ./service-1:/app
+    ports:
+      - 7001:7001
+    command: npm start
+    networks:
+      - app-network
+    links:
+      - rabbitmq
+
+  service-2:
+    build:
+      context: ./service-2
+      dockerfile: Dockerfile
+    working_dir: /app
+    volumes:
+      - ./service-2:/app
+    ports:
+      - 7002:7002
+    command: npm start
+    networks:
+      - app-network
+    links:
+      - rabbitmq
+
+  rabbitmq:
+    image: rabbitmq:3.8-management-alpine
+    ports:
+      - 5672:5672
+    networks:
+      - app-network
+networks:
+  app-network:
+    driver: bridge
